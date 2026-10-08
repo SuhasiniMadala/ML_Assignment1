@@ -110,4 +110,4 @@ python model4_overfit.py     # Stage 4: Overfitting demonstration
 
 ---
 
-**Author:** (Roll Number: `BT2024043`) • Department of Computer Science • October 2026
+**Author:** (Roll Number: `BT2024043`)
