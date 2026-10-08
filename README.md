@@ -1,84 +1,59 @@
-# 🌋 Geothermal Energy Polynomial Regression Analysis
+# 🌋 Machine Learning Assignment 1: Polynomial Regression Report
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.0%2B-orange.svg)](https://scikit-learn.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-A end-to-end Machine Learning pipeline and empirical investigation into **Polynomial Regression** models for geothermal renewable energy engineering, covering multi-stage turbine power optimization and 3D subterranean thermal anomaly mapping.
+**Roll Number:** `BT2024043`  
+**Assigned Problems:** `var1` & `var2`  
+**Repository:** [https://github.com/SuhasiniMadala/ML_Assignment1](https://github.com/SuhasiniMadala/ML_Assignment1)
 
 ---
 
-## 📌 Executive Summary & Problem Formulation
+## 📌 Executive Summary & Stat Cards
 
-This project addresses two continuous target prediction challenges using polynomial regression models built from scratch and validated with 10-Fold Cross-Validation:
-
-### ⚡ **Phase 1: Power Plant Steam Turbine Optimization (`var1`)**
-* **Goal:** Model the **Net Power Score ($y$)** of a multi-stage geothermal steam turbine based on six operational parameters:
-  * $x_1$: High-pressure steam valve adjustment
-  * $x_2$: Condenser coolant flow rate adjustment
-  * $x_3$: Re-injection pump hydraulic pressure
-  * $x_4$: Turbine blade pitch angle
-  * $x_5$: Non-condensable gas exhaust valve rate
-  * $x_6$: Steam inlet pressure adjustment
-* **Selected Model:** **Polynomial Degree 5 with Ridge Regression ($\alpha = 12.0$)**
-  * **10-Fold CV MSE:** `0.4734`
-  * **10-Fold CV $R^2$:** `0.9583`
+| VAR1 NET POWER (LASSO) | VAR2 THERMAL ANOMALY (RIDGE) | BASELINE → FINAL GAIN | CONSTRAINT COMPLIANCE |
+| :---: | :---: | :---: | :---: |
+| **CV $R^2$ = 0.9698** | **CV $R^2$ = 0.9942** | **+0.817 / +0.913 $R^2$** | **Strict Polynomial** |
+| CV MSE: 0.3450 • Deg 5 (195 active) | CV MSE: 0.2685 • Deg 9 (norm 20.55) | 96.4% & 99.4% MSE reduction | 5-Fold CV • 0 Data Leakage |
 
 ---
 
-### 🗺️ **Phase 2: Subterranean Thermal Reservoir Mapping (`var2`)**
-* **Goal:** Predict the **Thermal Anomaly Score ($y$)** across a 3D geological survey block to identify high-yield geothermal extraction well coordinates:
-  * $x_1$: East-West coordinate offset (meters)
-  * $x_2$: North-South coordinate offset (meters)
-  * $x_3$: Vertical depth offset relative to basecamp (meters)
-* **Selected Model:** **Polynomial Degree 11 with Ridge Regression ($\alpha = 1.0$)**
-  * **10-Fold CV MSE:** `0.2227`
-  * **10-Fold CV $R^2$:** `0.9951`
+## 🚀 Four-Stage Experimental Progression
+
+1. **M1 (Baseline):** Tested hints in prompt literally with OLS $\rightarrow$ heavy underfitting ($R^2 \approx 0.08 - 0.15$).
+2. **M2 (OLS Sweep):** Exhaustive 5-fold CV sweep across degrees $\rightarrow$ massive jump ($R^2 \approx 0.92 - 0.99$), but unregularized variance limits.
+3. **M3+ (Regularized — Final Winners):** 
+   - `var1`: **Lasso ($L_1$, $\alpha=0.00348$)** at Degree 5 prunes 57.8% of unphysical cross-terms (retaining 195 active terms), reaching **CV $R^2 = 0.9698$, CV MSE = 0.3450**.
+   - `var2`: **Ridge ($L_2$, $\alpha=0.00665$)** at Degree 9 smoothly stabilizes 3D subterranean heat fields (norm = 20.55), reaching **CV $R^2 = 0.9942$, CV MSE = 0.2685**.
+4. **M4 (Overfit Demo):** Pushed unconstrained OLS to Degree 8 (`var1`, 3,003 terms) & Degree 15 (`var2`, 816 terms) $\rightarrow$ train error near zero, validation MSE exploded to $1.58 \times 10^{11}$.
 
 ---
 
-## 📊 Cross-Validation Performance Summary
+## 📊 Master Results Comparison Table
 
-### **Phase 1 (`var1`): Polynomial Degree vs Validation Metrics**
-
-| Degree | Monomial Terms | OLS Val MSE | OLS Val $R^2$ | Ridge Val MSE ($\alpha=12.0$) | Ridge Val $R^2$ ($\alpha=12.0$) |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | 7 | 10.3846 | 0.0848 | 10.3821 | 0.0852 |
-| 2 | 28 | 3.2312 | 0.7145 | 3.2304 | 0.7147 |
-| 3 | 84 | 0.9950 | 0.9125 | 0.9875 | 0.9133 |
-| 4 | 210 | 0.8290 | 0.9278 | 0.7230 | 0.9368 |
-| **5 (Optimal)** | **462** | **0.9785** | **0.9125** | **0.4734** | **0.9583** |
-| 6 | 924 | N/A (Overfit) | N/A | 0.5961 | 0.9474 |
-| 7 | 1716 | N/A (Overfit) | N/A | 0.7075 | 0.9374 |
-
----
-
-### **Phase 2 (`var2`): Polynomial Degree vs Validation Metrics**
-
-| Degree | Monomial Terms | OLS Val MSE | OLS Val $R^2$ | Ridge Val MSE ($\alpha=1.0$) | Ridge Val $R^2$ ($\alpha=1.0$) |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | 4 | 36.1287 | 0.2302 | 36.1284 | 0.2303 |
-| 2 | 10 | 23.2342 | 0.5003 | 23.2338 | 0.5003 |
-| 3 | 20 | 12.9209 | 0.7202 | 12.9176 | 0.7204 |
-| 4 | 35 | 4.0550 | 0.9111 | 4.0604 | 0.9110 |
-| 5 | 56 | 1.5753 | 0.9658 | 1.5899 | 0.9654 |
-| 6 | 84 | 0.5934 | 0.9871 | 0.6212 | 0.9865 |
-| 7 | 120 | 0.3272 | 0.9929 | 0.3633 | 0.9922 |
-| 8 | 165 | 0.2454 | 0.9947 | 0.2650 | 0.9943 |
-| 9 | 220 | 0.2594 | 0.9943 | 0.2394 | 0.9948 |
-| 10 | 286 | 0.3426 | 0.9926 | 0.2238 | 0.9951 |
-| **11 (Optimal)** | **364** | **0.5396** | **0.9887** | **0.2227** | **0.9951** |
-| 12 | 455 | 0.6282 | 0.9850 | 0.2239 | 0.9951 |
-| 13 | 560 | 2.1360 | 0.9526 | 0.2261 | 0.9951 |
+| Stage | Script | Task | Features | Deg | Terms | Model | Train $R^2$ | Train MSE | 5-Fold CV $R^2$ | 5-Fold CV MSE | Status |
+| :---: | :--- | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
+| **M1** | `model1_baseline.py` | var1 | $x_1–x_3$ | 3 | 20 | OLS | 0.1742 | 9.502 | 0.1530 ±0.055 | 9.680 ±0.419 | ❌ UNDERFIT |
+| **M1** | `model1_baseline.py` | var2 | $x_1$ only | 4 | 5 | OLS | 0.0911 | 37.310 | 0.0810 ±0.048 | 43.616 ±6.550 | ❌ UNDERFIT |
+| **M2** | `model2_ols_sweep.py` | var1 | $x_1–x_6$ | 4 | 210 | OLS | 0.9628 | 0.408 | 0.9222 ±0.019 | 0.889 ±0.207 | OLS peak |
+| **M2** | `model2_ols_sweep.py` | var2 | $x_1–x_3$ | 8 | 165 | OLS | 0.9957 | 0.178 | 0.9941 ±0.001 | 0.270 ±0.035 | OLS peak |
+| **M3+** | `train_predict.py` | **var1** | $x_1–x_6$ | **5** | **462** | **Lasso ($\alpha=0.00348$)** | **0.9774** | **0.248** | **0.9698 ±0.004** | **0.345 ±0.041** | ✅ **WINNER** |
+| **M3+** | `train_predict.py` | **var2** | $x_1–x_3$ | **9** | **220** | **Ridge ($\alpha=0.00665$)** | **0.9959** | **0.168** | **0.9942 ±0.001** | **0.268 ±0.027** | ✅ **WINNER** |
+| **M4** | `model4_overfit.py` | var1 | $x_1–x_6$ | 8 | 3,003 | OLS | 0.9999 | 0.0006 | 0.4810 ±0.140 | 5.926 ±1.650 | ⚠️ High variance |
+| **M4** | `model4_overfit.py` | var2 | $x_1–x_3$ | 15 | 816 | OLS | 0.9987 | 0.052 | -3.15e9 ±4.0e9 | 1.58e11 ±2.0e11 | 💥 OVERFIT |
 
 ---
 
-## 📈 Visualizations
+## 📈 Visualizations Gallery
 
-| Phase 1: Error vs Degree & Residual Fit | Phase 2: Error vs Degree & 3D Spatial Anomaly Map |
+| Figure 1: Bias-Variance Curve vs Degree | Figure 2: Regularization Effects |
 | :---: | :---: |
-| ![Phase 1 Degree Error](p1_degree_vs_error.png) | ![Phase 2 Degree Error](p2_degree_vs_error.png) |
-| ![Phase 1 Actual vs Fitted](p1_pred_vs_actual.png) | ![Phase 2 3D Spatial Map](p2_3d_spatial_map.png) |
+| ![Figure 1](figures/fig1_degree_vs_mse.png) | ![Figure 2](figures/fig2_regularization_effects.png) |
+
+| Figure 3: Master Results Comparison | Figure 4: Residual Diagnostics |
+| :---: | :---: |
+| ![Figure 3](figures/fig3_master_comparison.png) | ![Figure 4](figures/fig4_residual_diagnostics.png) |
+
+| Figure 5: Actual vs Predicted 1:1 Fits |
+| :---: |
+| ![Figure 5](figures/fig5_actual_vs_predicted.png) |
 
 ---
 
@@ -86,54 +61,53 @@ This project addresses two continuous target prediction challenges using polynom
 
 ```
 ML_Assignment1/
-├── ML_Assignment.pdf              # Assignment Specification Document
-├── Polynomial_Regression_Report.pdf # Final 2-Page Technical Report
-├── Train1.xlsx                    # Phase 1 Training Data (1,000 samples)
-├── Test1.xlsx                     # Phase 1 Test Data (1,000 samples)
-├── Train2.xlsx                    # Phase 2 Training Data (1,000 samples)
-├── Test2.xlsx                     # Phase 2 Test Data (1,000 samples)
-├── pred_var1.csv                  # Phase 1 Predictions on Test1
-├── pred_var2.csv                  # Phase 2 Predictions on Test2
-├── sample_submission (1).csv      # Reference Submission Format
-├── train_and_predict.py           # Model Training & Inference Script
-├── generate_report.py             # PDF Report Generator Script
-├── p1_degree_vs_error.png         # Phase 1 Degree Validation Plot
-├── p1_pred_vs_actual.png          # Phase 1 Actual vs Fitted Scatter Plot
-├── p2_degree_vs_error.png         # Phase 2 Degree Validation Plot
-├── p2_3d_spatial_map.png          # Phase 2 3D Subsurface Scatter Plot
-├── README.md                      # Project Documentation
-└── .gitignore                     # Git Exclusion File
+├── BT2024043_ML_Assignment1_Report.pdf  # Final 5-Page Technical PDF Report
+├── BT2024043_pred_var1.csv               # Test1 Predictions (1,000 samples)
+├── BT2024043_pred_var2.csv               # Test2 Predictions (1,000 samples)
+├── ML_Assignment.pdf                     # Assignment Specification Document
+├── Train1.xlsx                           # Phase 1 Training Data
+├── Test1.xlsx                            # Phase 1 Test Data
+├── Train2.xlsx                           # Phase 2 Training Data
+├── Test2.xlsx                            # Phase 2 Test Data
+├── model1_baseline.py                    # Stage 1: Naive PDF baseline script
+├── model2_ols_sweep.py                   # Stage 2: Data-driven OLS sweep script
+├── model3_regularized.py                 # Stage 3: Regularization tuning script
+├── model4_overfit.py                     # Stage 4: Overfitting demonstration script
+├── train_predict.py                      # Stage 3+: Winning model training & prediction exporter
+├── generate_plots.py                     # Script generating all 5 figures in ./figures/
+├── generate_report.py                    # ReportLab script generating the 5-page PDF report
+├── figures/                              # Directory containing high-res figure PNGs
+└── README.md                             # Project Documentation
 ```
 
 ---
 
-## 🚀 Quickstart Guide
+## 💻 Replication Commands
 
-### 1. Requirements
-Install the required Python dependencies:
 ```bash
-pip install pandas numpy scikit-learn matplotlib seaborn reportlab openpyxl
-```
+# Clone repository and enter folder
+git clone https://github.com/SuhasiniMadala/ML_Assignment1.git
+cd ML_Assignment1
 
-### 2. Train Models & Generate Test Predictions
-Run the full training, 10-Fold CV evaluation, and inference pipeline:
-```bash
-python train_and_predict.py
-```
-Outputs generated:
-* `pred_var1.csv` (Predictions for `Test1.xlsx`)
-* `pred_var2.csv` (Predictions for `Test2.xlsx`)
-* High-resolution PNG plots for evaluation
+# Install dependencies
+pip install numpy pandas scikit-learn matplotlib seaborn reportlab openpyxl
 
-### 3. Generate Technical PDF Report
-Compile the publication-quality 2-page PDF report:
-```bash
+# Run winning model (generates final submission CSVs BT2024043_pred_var1.csv and BT2024043_pred_var2.csv)
+python train_predict.py
+
+# Recreate all 5 figures in ./figures/
+python generate_plots.py
+
+# Generate PDF Report
 python generate_report.py
+
+# Run individual stages to reproduce comparison table:
+python model1_baseline.py    # Stage 1: Naive PDF baseline
+python model2_ols_sweep.py   # Stage 2: Data-driven OLS sweep
+python model3_regularized.py # Stage 3: Regularized models
+python model4_overfit.py     # Stage 4: Overfitting demonstration
 ```
-Outputs generated:
-* `Polynomial_Regression_Report.pdf`
 
 ---
 
-## 📝 License
-This project is open source under the MIT License.
+**Author:** (Roll Number: `BT2024043`) • Department of Computer Science • October 2026
